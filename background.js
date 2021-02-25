@@ -1,15 +1,27 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
+//to check connection of fg with bg
+
+chrome.runtime.onMessage.addListener(checktimestamp);
+
+function checktimestamp(msg) {
+    // Do your work here
+    if (msg.method == "gettimestampforcurrentpoint") {
+        console.log('bg.js gettimestampforcurrrentpoint called')
+        chrome.tabs.executeScript(null, { file: './gettimestamp.js' }, () => {
+            console.log('injected gettimestamp.js file into YT window DOM.')
+                //gettimestamp.js will execute now in main chrome window which is running youtube.com/somevideo
+        })
+    }
+}
+
+//first this runs
 chrome.tabs.onActivated.addListener(tab => {
     console.log(tab);
     chrome.tabs.get(tab.tabId, c => {
         // console.log(c.url);
         if (/^https:\/\/www\.youtube/.test(c.url)) {
-
+            //above pattern tests for the youtube hostname. If youtube is running in the active tab, it injects ./foreground.js in DOM.
 
 
             chrome.tabs.executeScript(null, { file: './foreground.js' }, () => {
@@ -17,7 +29,6 @@ chrome.tabs.onActivated.addListener(tab => {
             })
         }
     })
-
 })
 
 //for sending a message
@@ -25,33 +36,32 @@ chrome.tabs.onActivated.addListener(tab => {
 
 // });
 
-//for listening any message which comes from runtime
 
+// chrome.runtime.onMessage.addListener(retrievenotes)
 
-chrome.runtime.onMessage.addListener(retrievenotes)
+// function retrievenotes(msg) {
+//     if (msg.method == "getnotes") {
+//         //todo
+//     }
 
-function retrievenotes(msg) {
-    if (msg.method == "getnotes") {
-        //todo
-    }
+// }
 
-}
+// chrome.runtime.onMessage.addListener(storelocal); //todo
 
-chrome.runtime.onMessage.addListener(storelocal);
+// function storelocal(msg) { //todo
+//     if (msg.method == "storeinlocal") {
+//         chrome.storage.local.set({ note: inputnote, timestamp: time, videolink: link });
+//     }
+// }
 
-function storelocal(msg) {
-    if (msg.method == "storeinlocal") {
-        chrome.storage.local.set({ note: inputnote, timestamp: time, videolink: link });
-    }
-}
+chrome.runtime.onMessage.addListener(getcurrenttimestamp); //fine
 
-chrome.runtime.onMessage.addListener(gettimestampfile);
-
-function gettimestampfile(msg) {
-    if (msg.method == "tsget") {
-        var temp1 = msg.tsval;
+//fine
+function getcurrenttimestamp(msg) {
+    if (msg.method == "sendtimestamptobg") {
+        var temp1 = msg.tsvalue;
         var temp2 = msg.finallink;
-        console.log("msg.tsval value: " + msg.tsval);
+        console.log("msg.tsvalue value: " + msg.tsval);
         console.log('msg.finallink ' + msg.finallink);
         //tsval and finallink being received properly in the bg consolelog
 
@@ -60,19 +70,23 @@ function gettimestampfile(msg) {
         //     console.log('tsval to popup');
         // })
     }
-
 }
 
-function checktimestamp(msg) {
-    // Do your work here
-    if (msg.method == "gettimestamp") {
 
-        chrome.tabs.executeScript(null, { file: './gettimestamp.js' }, () => {
-            console.log('injected gettimestamp.js file')
-                //listen for result string from gettimestamp.js
-        })
+chrome.runtime.onMessage.addListener(localstorageset);
+
+function localstorageset(msg) {
+    if (msg.method == "setlocalstorage") {
+        console.log('setlocalstorage background.js') //called
+            // chrome.runtime.sendMessage({ method: "setlocalstorage", bookmarkvalue: bookmarkinput, timestamp: ts, vidlink: tslink })
+            // chrome.storage.local.set({ "bklocal": msg.bookmarkvalue, "tslocal": msg.timestamp, "vidlinklocal": msg.vidlink })
+            // chrome.storage.local.set({ "password": "123" })
+            // chrome.runtime.sendMessage({ method: "localstoragesetrequest", pass: "hellopass" });
+
     }
 }
+
+
 
 // chrome.runtime.onInstalled.addListener(function() {
 //   chrome.storage.sync.set({color: '#3aa757'}, function() {

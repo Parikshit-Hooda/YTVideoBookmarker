@@ -1,42 +1,30 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
 $(function() {
 
-    //retrieve data from local for already stored notes
-    chrome.runtime.sendMessage({ method: "getnotes" })
+        //retrieve data from local for already stored notes
+        // chrome.runtime.sendMessage({ method: "getbookmarks" }) //todo, not connected to background.js
 
-    $('#pointsli > li > span > a').on("click", function() {
-        console.log('li clicked event fired');
-    })
+        // $('#bookmark_ulist > li > span > a').on("click", function() {
+        // console.log('li clicked event fired');
+    }) //todo
 
-    //document.querySelector("#pointsli > li > span > a")
+//todo
+//make same page reload of youtube video to bookmarked point
 
-    //todo
-    //make same page reload of youtube video to bookmarked point
+$('#bookmarkdesc').focus(function() {
 
-    $('#notedesc').focus(function() {
-
-
+        console.log('focus bookmark description input field') //executing
 
         //for sending a message
-        chrome.runtime.sendMessage({ method: "gettimestamp" });
+        chrome.runtime.sendMessage({ method: "gettimestampforcurrentpoint" });
 
         //for listening any message which comes from runtime
         chrome.runtime.onMessage.addListener(tsvalue);
 
 
-        // chrome.storage.local.set({ note: inputnote, timestamp: time, videolink: link });
 
-        function makeentryinstorage(inputnote, time, link) {
-            chrome.runtime.sendMessage({ method: "storeinlocal", note: inputnote, timestamp: time, videolink: link });
-
-        }
-
-        var ts, tslink, desc;
+        var ts, tslink;
 
         function tsvalue(msg) {
             // Do your work here
@@ -47,49 +35,66 @@ $(function() {
                 ts = msg.tsvaltopopup;
                 tslink = msg.fl;
 
-
-                $('#submitnote').on('click', function() {
+                // console.log('ts tslink' + ts + ' ' + tslink) //working fine
+                $('#submitbookmark').on('click', function() {
                     // console.log('submitnote button clicked')
-                    var noteinput = $('#notedesc').val();
-                    console.log('#noteinput val ' + noteinput);
-                    $('#pointsli').append('<li><span>' + ts + ' - <a href="' + msg.fl + '">' + noteinput + '</a></span></li>');
+                    //#bookmark_ulist
 
-                    makeentryinstorage(noteinput, ts, tslink);
+                    var bookmarkinput = $('#bookmarkdesc').val();
+
+                    // console.log('#bookmarkinput val ' + bookmarkinput); //fine
+                    $('#bookmark_ulist').append('<li><span>' + ts + ' - <a href="' + tslink + '">' + bookmarkinput + '</a></span></li>');
+                    console.log('list item appended to bookmark_ulist')
+
+                    // chrome.storage.local.set({ "bklocal": bookmarkinput, "tslocal": ts, "vidlinklocal": tslink })
+
+                    //popup > bg > fg while setting
+                    //while getting, see..
+                    chrome.runtime.sendMessage({ method: "setlocalstorage", bookmarkvalue: bookmarkinput, timestamp: ts, vidlink: tslink })
 
 
-                    // $('#pointsli').append('<li><span><a href="' + $(msg.fl) + '">' + noteinput + '</a></span></li>');
                 });
 
                 $('#currts').text(msg.tsvaltopopup)
+                $('#receiptts').text('got timestamp')
 
-                $('#tsreceipt').text('got timestamp')
-                    // console.log('msg obj popup.js ' + msg);
-                    // console.log('popupjs noteinput ' + noteinput);
-                    // $('#pointsli').append('<li><span><a href="' + $(msg.fl) + '">' + noteinput + '</a></span></li>');
 
-                // { method: "tsfind", tsvaltopopup: msg.tsval, fl: msg.finallink }
-
+                // makeentryinstorage(bookmarkinput, ts, tslink);
 
             }
-
         }
 
 
-
-        // ------------
-        // $('#currts').text('hello');
-        // chrome.runtime.onMessage.addListener(fn);
-
-        // function fn(obj, sender, sendResponse) {
-        //     if (obj) {
-        //         sendResponse({ message: 'in the if(obj)' })
-        //         $('#currts').text(obj);
-        //     }
-        // }
-
     })
-});
+    // });
 
+
+
+// chrome.storage.local.set({ note: inputnote, timestamp: time, videolink: link });
+
+// function makeentryinstorage(bookmarkinput, time, link) {
+//     chrome.runtime.sendMessage({ method: "storeinlocal", note: bookmarkinput, timestamp: time, videolink: link });
+
+// } //todo
+
+// makeentryinstorage(bookmarkinput, ts, tslink);
+
+
+// $('#pointsli').append('<li><span><a href="' + $(msg.fl) + '">' + noteinput + '</a></span></li>');
+
+
+// console.log('msg obj popup.js ' + msg);
+// console.log('popupjs noteinput ' + noteinput);
+// $('#pointsli').append('<li><span><a href="' + $(msg.fl) + '">' + noteinput + '</a></span></li>');
+
+// { method: "tsfind", tsvaltopopup: msg.tsval, fl: msg.finallink }
+
+
+
+
+
+
+// ----------------------------
 // let changeColor = document.getElementById('changeColor');
 
 // chrome.storage.sync.get('color', function(data) {
