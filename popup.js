@@ -29,9 +29,6 @@ $('#bookmarkdesc').focus(function() {
         function tsvalue(msg) {
             // Do your work here
             if (msg.method == "tsfind") {
-                //here, ive gotten timestamped video link as msg.fl, and timestamp in hour format as msg.tsvaltopopup
-                // var noteinput = $('#notedesc').val();
-                //add to popup.html, "timestamp received"
                 ts = msg.tsvaltopopup;
                 tslink = msg.fl;
 
@@ -50,7 +47,7 @@ $('#bookmarkdesc').focus(function() {
 
                     //popup > bg > fg while setting
                     //while getting, see..
-                    chrome.runtime.sendMessage({ method: "setlocalstorage", bookmarkvalue: bookmarkinput, timestamp: ts, vidlink: tslink })
+                    // chrome.runtime.sendMessage({ method: "setlocalstorage", bookmarkvalue: bookmarkinput, timestamp: ts, vidlink: tslink })
 
 
                 });
@@ -88,25 +85,3 @@ $('#bookmarkdesc').focus(function() {
 // $('#pointsli').append('<li><span><a href="' + $(msg.fl) + '">' + noteinput + '</a></span></li>');
 
 // { method: "tsfind", tsvaltopopup: msg.tsval, fl: msg.finallink }
-
-
-
-
-
-
-// ----------------------------
-// let changeColor = document.getElementById('changeColor');
-
-// chrome.storage.sync.get('color', function(data) {
-//   changeColor.style.backgroundColor = data.color;
-//   changeColor.setAttribute('value', data.color);
-// });
-
-// changeColor.onclick = function(element) {
-//   let color = element.target.value;
-//   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//     chrome.tabs.executeScript(
-//         tabs[0].id,
-//         {code: 'document.body.style.backgroundColor = "' + color + '";'});
-//   });
-// };

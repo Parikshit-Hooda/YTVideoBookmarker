@@ -8,6 +8,21 @@ console.log(result); //check for proper string retrieval in youtube video page D
 //     console.log('response received' + response);
 // });
 
+// chrome.runtime.onMessage.addListener(func1);
+
+// function func1() {
+//     // if (msg.method == 'testretrieval') {
+//     console.log('entered testretrieval fg.js')
+//     chrome.storage.local.get(['https://www.youtube.com/watch?v=Ipa58NVGs_c'], function(result) {
+//         console.log('Value currently is ' + result.bk);
+//     });
+//     // }
+
+// }
+
+// func1();
+
+
 chrome.runtime.onMessage.addListener(localstorageset_req);
 
 function localstorageset_req(msg) {

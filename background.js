@@ -29,7 +29,21 @@ chrome.tabs.onActivated.addListener(tab => {
             })
         }
     })
+
+    //fetch data from local storage
+    // var windowlink;
+    // chrome.tabs.get(tab.tabId, a => {
+    //     windowlink = a.url;
+    // });
+    // console.log('testretrieval bg.js')
+    // chrome.runtime.sendMessage({ method: "testretrieval" });
+
 })
+
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//     console.log('browser action called' + tab);
+//     //     // Run the following code when the popup is opened
+// });
 
 //for sending a message
 // chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
